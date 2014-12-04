@@ -117,81 +117,46 @@ void Polymer::Calculate_Spring_Constant_Vertical()
 	return;
 }
 
-void Polymer::Set_Up_Bars_Peptide()
+void Polymer::Set_Up_Numerator_Peptide(int p, int q)
 {
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		int n = 0;
-		for (int j = 0; j < DIMENSION; j++)
-		{
-			Current_Bar_Peptide[i][j] = 0;
-			Bar_Above_Peptide[i][j] = 0;
-			Bar_Below_Peptide[i][j] = 0;
+	//we need to find the number of bonds joining level p-1 and p-2, then p-2 and p-3... 0 and 1
+	//first we need to find what length levels p-1 and p-2 are
 
-			if (Murein[i][j].Return_Number_Bonds_Peptide() == 1)
-			{
-				Current_Bar_Peptide[i][n]++;
-			}
-			else if (Murein[i][j].Return_Number_Bonds_Peptide() == 0)
-			{
-				n = j + 1;
-			}//this gives length of bar at start of bar and zero elseware
-		}
+	int leftward_extent_above[DIMENSION]; //n can take values less that p and represents the level
+	int rightward_extent_above[DIMENSION]; //n can take values less that p and represents the level
+
+	for (int n = p - 1; p > 0; p--)
+	{
+		int m = q;
+		int total_left = 0; // this total represents the current length of all the bars being taken into account
+		int total_right = 0; // this total represents the current length of all the bars being taken into account
+		
+		do
+		{
+			leftward_extent_above[n]++;
+			m--;
+		} while (Return_Number_Bonds_Glycan(n, m) == 1&&leftward_extent_above[n]<total_left);
+
+		total_left = leftward_extent_above[n];
+		
 	}
 
-	for (int i = 1; i < DIMENSION; i++)
+	for (int n = p - 1; p > 0; p--)
 	{
-		for (int j = 0; j < DIMENSION; j++)
+		int m = q;
+
+		do
 		{
-			int n = j;
+			rightward_extent_above[n]++;
+			m++;
+		} while (Return_Number_Bonds_Glycan(n, m) == 1 && rightward_extent_above[n] < total_right);
 
-			if (Current_Bar_Peptide[i][j] != 0)
-			{
-				do
-				{
-					n--;
-				} while (Current_Bar_Peptide[i - 1][n] != 0);
+		total_right = rightward_extent_above[n];
 
-				int Total = 0;
-
-				do
-				{
-					Total = Total + Current_Bar_Peptide[i - 1][n];
-					n = n + Current_Bar_Peptide[i - 1][n];
-				} while (Current_Bar_Peptide[i][n] > Total);
-
-				Bar_Above_Peptide[i][j] = Total;
-			}//This gives length of bars above at start of each bar and 0 elseware
-		}
 	}
 
-	for (int i = 0; i < DIMENSION-1; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
-		{
-			int n = j;
+	//this finds the lengths of all the above levels
 
-			if (Current_Bar_Peptide[i][j] != 0)
-			{
-				do
-				{
-					n--;
-				} while (Current_Bar_Peptide[i + 1][n] != 0);
-
-				int Total = 0;
-				do
-				{
-					Total = Total + Current_Bar_Peptide[i + 1][n];
-					n = n + Current_Bar_Peptide[i + 1][n];
-				} while (Current_Bar_Peptide[i][n] > Total);
-
-				Bar_Below_Peptide[i][j] = Total;
-			}//This gives length of bars below at start of each bar and zero elseware
-		}
-	}
-	
-	Bar_Above_Peptide[0][0] = DIMENSION;
-	Bar_Below_Peptide[DIMENSION - 2][0] = DIMENSION;
 }
 
 void Polymer::Calculate_All_Forces_Upwards(double Total_Force)

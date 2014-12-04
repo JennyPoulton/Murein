@@ -10,11 +10,11 @@ class Polymer
 private:
 	Monomer Murein[DIMENSION][DIMENSION];
 
-	int Current_Bar_Peptide[DIMENSION][DIMENSION]; //these store the lengths of all bars and there starting dimensions
-	int Bar_Above_Peptide[DIMENSION][DIMENSION];
-	int Bar_Below_Peptide[DIMENSION][DIMENSION];
+	int Numerator;
+	int Denominator;
 
-	void Set_Up_Bars_Peptide();
+	void Set_Up_Numerator_Peptide();
+	void Set_Up_Denominator_Peptide();
 
 	double Spring_Constant_Verticle;
 	double Spring_Constant_Horizontal;
