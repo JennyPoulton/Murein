@@ -66,58 +66,11 @@ void Polymer::Calculate_Spring_Constant_Vertical()
 	}
 
 	Spring_Constant_Verticle = Spring_Constant;
-
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
-		{
-			int n = 0;
-			if (Current_Bar_Peptide[i][j] != 0)
-			{
-				n = Current_Bar_Peptide[i][j];
-			}
-			else if (Current_Bar_Peptide[i][j] == 0)
-			{
-				Current_Bar_Peptide[i][j] = n;
-			}
-		}
-	}
-
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
-		{
-			int n = 0;
-			if (Bar_Above_Peptide[i][j] != 0)
-			{
-				n = Bar_Above_Peptide[i][j];
-			}
-			else if (Bar_Above_Peptide[i][j] == 0)
-			{
-				Bar_Above_Peptide[i][j] = n;
-			}
-		}
-	}
-
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
-		{
-			int n = 0;
-			if (Bar_Below_Peptide[i][j] != 0)
-			{
-				n = Bar_Below_Peptide[i][j];
-			}
-			else if (Bar_Below_Peptide[i][j] == 0)
-			{
-				Bar_Below_Peptide[i][j] = n;
-			}
-		}
-	}
+	
 	return;
 }
 
-void Polymer::Set_Up_Numerator_Peptide(int p, int q)
+void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 {
 	//we need to find the number of bonds joining level p-1 and p-2, then p-2 and p-3... 0 and 1
 	//first we need to find what length levels p-1 and p-2 are
@@ -129,7 +82,7 @@ void Polymer::Set_Up_Numerator_Peptide(int p, int q)
 	{
 		int m = q;
 		int total_left = 0; // this total represents the current length of all the bars being taken into account
-		int total_right = 0; // this total represents the current length of all the bars being taken into account
+		
 		
 		do
 		{
@@ -143,6 +96,8 @@ void Polymer::Set_Up_Numerator_Peptide(int p, int q)
 
 	for (int n = p - 1; p > 0; p--)
 	{
+		int total_right = 0; // this total represents the current length of all the bars being taken into account
+
 		int m = q;
 
 		do
@@ -157,70 +112,64 @@ void Polymer::Set_Up_Numerator_Peptide(int p, int q)
 
 	//this finds the lengths of all the above levels
 
-}
+	//now the numerator is the number of joins which connects anything within these levels to the one above it
 
-void Polymer::Calculate_All_Forces_Upwards(double Total_Force)
-{
-	Set_Up_Bars_Peptide();
+	Numerator[p][q] = 1;
 
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
+	for (int n = p - 1; n > 0; n--)
+	{ 
+		int m = q;
+		int tally_peptides = 0;
+
+		for (int i = 0; i < leftward_extent_above[n]; i++)
 		{
-			int Numerator = 1;
-			int Denominator = 1;
-
-			for (int n = i; n > 0; n--)
+			if (Return_Number_Bonds_Peptide(n, m-i) == 1)
 			{
-				Numerator = Numerator*Current_Bar_Peptide[n][j];
-				Denominator = Denominator*Bar_Above_Peptide[n][j];
+				tally_peptides++;
 			}
-
-			Murein[i][j].Set_Vertical_Force(Total_Force*(double)Numerator/(double)Denominator);
 		}
 
-
-	}
-}
-
-void Polymer::Calculate_All_Forces_Downwards(double Total_Force)
-{
-	for (int i = 0; i < DIMENSION; i++)
-	{
-		for (int j = 0; j < DIMENSION; j++)
+		for (int i = 0; i < rightward_extent_above[n]; i++)
 		{
-			int Numerator = 1;
-			int Denominator = 1;
-			for (int n = i; n < DIMENSION; n++)
+			if (Return_Number_Bonds_Peptide(n, m + i) == 1)
 			{
-				Numerator = Numerator*Current_Bar_Peptide[n][j];
-				Denominator = Denominator*Bar_Below_Peptide[n][j];
+				tally_peptides++;
 			}
-
-			Murein[i][j].Set_Vertical_Force(Total_Force*(double)Numerator/(double)Denominator);
 		}
 
-		
+		Numerator[p][q] = Numerator[p][q]*tally_peptides;
 	}
 
-	for (int i = 0; i < DIMENSION; i++)
+	Denominator[p][q] = 1;
+
+	for (int n = p - 1; n > 0; n--)
 	{
-		for (int j = 0; j < DIMENSION; j++)
+		int m = q;
+		int tally_peptides = 0;
+
+		for (int i = 0; i < leftward_extent_above[n]; i++)
 		{
-			Murein[i][j].Set_Length_Peptide(Murein[i][j].Return_Vertical_Force()/(double)PEPTIDEK);
+			if (Return_Number_Bonds_Peptide(n-1, m - i) == 1)
+			{
+				tally_peptides++;
+			}
 		}
+
+		for (int i = 0; i < rightward_extent_above[n]; i++)
+		{
+			if (Return_Number_Bonds_Peptide(n-1, m + i) == 1)
+			{
+				tally_peptides++;
+			}
+		}
+
+		Denominator[p][q] = Denominator[p][q]*tally_peptides;
 	}
-}//this will give total force and set lengths
 
-void Polymer::Calculate_All_Forces_Leftwards(double Total_Force)
-{
+	Force_Upwards[p][q] = Input_Force*Numerator[p][q]/(double)Denominator[p][q];
 
 }
 
-void Polymer::Calculate_All_Forces_Rightwards(double Total_Force)
-{
-
-}
 
 void Polymer::Calculate_Bond_With_Max_Force()
 {

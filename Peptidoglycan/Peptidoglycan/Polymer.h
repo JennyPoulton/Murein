@@ -10,11 +10,13 @@ class Polymer
 private:
 	Monomer Murein[DIMENSION][DIMENSION];
 
-	int Numerator;
-	int Denominator;
+	int Numerator[DIMENSION][DIMENSION];
+	int Denominator[DIMENSION][DIMENSION];
 
-	void Set_Up_Numerator_Peptide();
-	void Set_Up_Denominator_Peptide();
+	double Force_Upwards[DIMENSION][DIMENSION];
+
+	void Find_Force_Upwards(double Input_Force, int p, int q);
+
 
 	double Spring_Constant_Verticle;
 	double Spring_Constant_Horizontal;
