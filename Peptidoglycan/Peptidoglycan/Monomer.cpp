@@ -1,11 +1,14 @@
 #include"Monomer.h"
-#include<random>
+#include<stdlib.h>
+#include<time.h>
 
 
 
 
 Monomer::Monomer()
 {
+	srand(time(NULL));
+
 	Set_Length_Glycan(GLYCAN_LENGTH);
 	Set_Length_Peptide(PEPTIDE_LENGTH);
 	Set_Spring_Constant_Glycan(GLYCAN_SPRING_CONSTANT);

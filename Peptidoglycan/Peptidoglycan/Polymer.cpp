@@ -12,9 +12,7 @@ Polymer::Polymer()
 	Set_Forces_And_Lengths(1);
 
 	Calculate_Spring_Constant_Horizontal();
-	Calculate_Spring_Constant_Vertical();
-
-	
+	Calculate_Spring_Constant_Vertical();	
 		
 }//in which the forces through each spring set to zero and the spring constants in each direction are found
 
@@ -98,7 +96,7 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 		{
 			leftward_extent_above[n]++;
 			m--;
-		} while (Return_Number_Bonds_Glycan(n, m) == 1&&leftward_extent_above[n]<total_left);
+		} while ((Return_Number_Bonds_Glycan(n, m) == 1 || leftward_extent_above[n]<total_left) && m<DIMENSION&&m>DIMENSION);
 
 		total_left = leftward_extent_above[n];
 		
@@ -114,7 +112,7 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 		{
 			rightward_extent_above[n]++;
 			m++;
-		} while (Return_Number_Bonds_Glycan(n, m) == 1 && rightward_extent_above[n] < total_right);
+		} while ((Return_Number_Bonds_Glycan(n, m) == 1||rightward_extent_above[n] < total_right)&&m<DIMENSION&&m>DIMENSION);
 
 		total_right = rightward_extent_above[n];
 
@@ -198,7 +196,7 @@ void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
 		{
 			leftward_extent_below[n]++;
 			m--;
-		} while (Return_Number_Bonds_Glycan(n, m) == 1 && leftward_extent_below[n]<total_left);
+		} while ((Return_Number_Bonds_Glycan(n, m) == 1 || leftward_extent_below[n]<total_left) && m<DIMENSION&&m>DIMENSION);
 
 		total_left = leftward_extent_below[n];
 
@@ -214,7 +212,7 @@ void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
 		{
 			rightward_extent_below[n]++;
 			m++;
-		} while (Return_Number_Bonds_Glycan(n, m) == 1 && rightward_extent_below[n] < total_right);
+		} while ((Return_Number_Bonds_Glycan(n, m) == 1 || rightward_extent_below[n] < total_right) && m<DIMENSION&&m>DIMENSION);
 
 		total_right = rightward_extent_below[n];
 
@@ -279,7 +277,6 @@ void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
 	Force_Downwards[p][q] = Input_Force*Numerator[p][q] / (double)Denominator[p][q];
 
 }
-
 
 void Polymer::Calculate_Bond_With_Max_Force()
 {
