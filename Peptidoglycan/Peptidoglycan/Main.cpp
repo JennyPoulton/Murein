@@ -40,8 +40,7 @@ int main(void)
 
 	double Force = 10;
 
-	StaphAureous.Calculate_All_Forces_Upwards(Force/(double)2);
-	StaphAureous.Calculate_All_Forces_Downwards(Force/(double)2);
+	StaphAureous.Set_Forces_And_Lengths(Force);
 	//StaphAureous.Calculate_All_Forces_Leftwards(Force / (double)2);
 	//StaphAureous.Calculate_All_Forces_Rightwards(Force / (double)2);
 

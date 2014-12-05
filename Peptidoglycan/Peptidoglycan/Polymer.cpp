@@ -1,6 +1,4 @@
 #include"Polymer.h"
-#define PEPTIDEK 6
-#define GLYCANK 7
 #include<iostream>
 using namespace std;
 
@@ -11,10 +9,7 @@ Polymer::Polymer()
 	Min_Length_Glycan = 1000000000000000;
 	Min_Length_Peptide = 1000000000000000;
 	
-	Calculate_All_Forces_Upwards(0);
-	Calculate_All_Forces_Downwards(0);
-	Calculate_All_Forces_Leftwards(0);
-	Calculate_All_Forces_Rightwards(0);
+	Set_Forces_And_Lengths(1);
 
 	Calculate_Spring_Constant_Horizontal();
 	Calculate_Spring_Constant_Vertical();
@@ -31,7 +26,7 @@ void Polymer::Calculate_Spring_Constant_Horizontal()
 		Number[i] = 0;
 		for (int j = 0; j < DIMENSION; j++)
 		{
-			Number[i] = Number[i] + PEPTIDEK*Murein[j][i].Return_Number_Bonds_Peptide();
+			Number[i] = Number[i] + PEPTIDE_SPRING_CONSTANT*Murein[j][i].Return_Number_Bonds_Peptide();
 		}
 	}
 
@@ -54,7 +49,7 @@ void Polymer::Calculate_Spring_Constant_Vertical()
 		Number[i] = 0;
 		for (int j = 0; j < DIMENSION; j++)
 		{
-			Number[i] = Number[i] + GLYCANK*Murein[i][j].Return_Number_Bonds_Glycan();
+			Number[i] = Number[i] + GLYCAN_SPRING_CONSTANT*Murein[i][j].Return_Number_Bonds_Glycan();
 		}
 	}
 
@@ -70,6 +65,21 @@ void Polymer::Calculate_Spring_Constant_Vertical()
 	return;
 }
 
+void Polymer::Set_Forces_And_Lengths(double input_force)
+{
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		for (int j = 0; j < DIMENSION; j++)
+		{
+			Find_Force_Upwards(input_force / (double)2, i, j);
+			Find_Force_Downwards(input_force / (double)2, i, j);
+
+			Murein[i][j].Set_Vertical_Force(Force_Upwards[i][j] + Force_Downwards[i][j]);
+			Murein[i][j].Set_Length_Peptide((Force_Upwards[i][j] + Force_Downwards[i][j]) / (double)PEPTIDE_LENGTH);
+		}
+	}
+}
+
 void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 {
 	//we need to find the number of bonds joining level p-1 and p-2, then p-2 and p-3... 0 and 1
@@ -78,7 +88,7 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 	int leftward_extent_above[DIMENSION]; //n can take values less that p and represents the level
 	int rightward_extent_above[DIMENSION]; //n can take values less that p and represents the level
 
-	for (int n = p - 1; p > 0; p--)
+	for (int n = p - 1; n > 0; n--)
 	{
 		int m = q;
 		int total_left = 0; // this total represents the current length of all the bars being taken into account
@@ -94,7 +104,7 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 		
 	}
 
-	for (int n = p - 1; p > 0; p--)
+	for (int n = p - 1; n > 0; n--)
 	{
 		int total_right = 0; // this total represents the current length of all the bars being taken into account
 
@@ -167,6 +177,106 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 	}
 
 	Force_Upwards[p][q] = Input_Force*Numerator[p][q]/(double)Denominator[p][q];
+
+}
+
+void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
+{
+	//we need to find the number of bonds joining level p-1 and p-2, then p-2 and p-3... 0 and 1
+	//first we need to find what length levels p-1 and p-2 are
+
+	int leftward_extent_below[DIMENSION]; //n can take values less that p and represents the level
+	int rightward_extent_below[DIMENSION]; //n can take values less that p and represents the level
+
+	for (int n = p + 1; n <DIMENSION; n++)
+	{
+		int m = q;
+		int total_left = 0; // this total represents the current length of all the bars being taken into account
+
+
+		do
+		{
+			leftward_extent_below[n]++;
+			m--;
+		} while (Return_Number_Bonds_Glycan(n, m) == 1 && leftward_extent_below[n]<total_left);
+
+		total_left = leftward_extent_below[n];
+
+	}
+
+	for (int n = p + 1; n <DIMENSION; n++)
+	{
+		int total_right = 0; // this total represents the current length of all the bars being taken into account
+
+		int m = q;
+
+		do
+		{
+			rightward_extent_below[n]++;
+			m++;
+		} while (Return_Number_Bonds_Glycan(n, m) == 1 && rightward_extent_below[n] < total_right);
+
+		total_right = rightward_extent_below[n];
+
+	}
+
+	//this finds the lengths of all the above levels
+
+	//now the numerator is the number of joins which connects anything within these levels to the one above it
+
+	Numerator[p][q] = 1;
+
+	for (int n = p + 1; n <DIMENSION; n++)
+	{
+		int m = q;
+		int tally_peptides = 0;
+
+		for (int i = 0; i < leftward_extent_below[n]; i++)
+		{
+			if (Return_Number_Bonds_Peptide(n, m - i) == 1)
+			{
+				tally_peptides++;
+			}
+		}
+
+		for (int i = 0; i < rightward_extent_below[n]; i++)
+		{
+			if (Return_Number_Bonds_Peptide(n, m + i) == 1)
+			{
+				tally_peptides++;
+			}
+		}
+
+		Numerator[p][q] = Numerator[p][q] * tally_peptides;
+	}
+
+	Denominator[p][q] = 1;
+
+	for (int n = p - 1; n > 0; n--)
+	{
+		int m = q;
+		int tally_peptides = 0;
+
+		for (int i = 0; i < leftward_extent_below[n]; i++)
+		{
+			if (Return_Number_Bonds_Peptide(n - 1, m - i) == 1)
+			{
+				tally_peptides++;
+			}
+		}
+
+		for (int i = 0; i < rightward_extent_below[n]; i++)
+		{
+			if (Return_Number_Bonds_Peptide(n - 1, m + i) == 1)
+			{
+				tally_peptides++;
+			}
+		}
+
+		Denominator[p][q] = Denominator[p][q] * tally_peptides;
+	}
+
+	Force_Downwards[p][q] = Input_Force*Numerator[p][q] / (double)Denominator[p][q];
 
 }
 

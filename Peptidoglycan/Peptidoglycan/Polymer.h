@@ -14,9 +14,10 @@ private:
 	int Denominator[DIMENSION][DIMENSION];
 
 	double Force_Upwards[DIMENSION][DIMENSION];
+	double Force_Downwards[DIMENSION][DIMENSION];
 
 	void Find_Force_Upwards(double Input_Force, int p, int q);
-
+	void Find_Force_Downwards(double Input_Force, int p, int q);
 
 	double Spring_Constant_Verticle;
 	double Spring_Constant_Horizontal;
@@ -34,10 +35,7 @@ public:
 	void Calculate_Spring_Constant_Horizontal();
 	void Calculate_Spring_Constant_Vertical();
 
-	void Calculate_All_Forces_Upwards(double Total_Force);
-	void Calculate_All_Forces_Downwards(double Total_Force);
-	void Calculate_All_Forces_Leftwards(double Total_Force);
-	void Calculate_All_Forces_Rightwards(double Total_Force);
+	void Set_Forces_And_Lengths(double input_force);
 
 	void Calculate_Bond_With_Max_Force();
 	void Break_Bond();

@@ -1,13 +1,8 @@
 #include"Monomer.h"
 #include<random>
-#define GLYCAN_LENGTH 1
-#define PEPTIDE_LENGTH 2
 
-#define GLYCAN_SPRING_CONSTANT 5
-#define PEPTIDE_SPRING_CONSTANT 6
 
-#define PEPTIDE_PROB 0.5
-#define GLYCAN_PROB 0.8
+
 
 Monomer::Monomer()
 {
