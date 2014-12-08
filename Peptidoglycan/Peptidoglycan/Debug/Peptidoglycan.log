@@ -1,15 +1,8 @@
-﻿Build started 05/12/2014 14:19:45.
+﻿Build started 08/12/2014 13:13:09.
      1>Project "C:\Users\Jenny\Documents\Murein\Peptidoglycan\Peptidoglycan\Peptidoglycan.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp Monomer.cpp Polymer.cpp Subunit.cpp
-         Monomer.cpp
-     1>c:\users\jenny\documents\murein\peptidoglycan\peptidoglycan\monomer.cpp(10): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-         Generating Code...
-         Compiling...
-         Subunit.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Polymer.cpp
          Polymer.cpp
-         Main.cpp
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jenny\Documents\Murein\Peptidoglycan\Debug\Peptidoglycan.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Jenny\Documents\Murein\Peptidoglycan\Debug\Peptidoglycan.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jenny\Documents\Murein\Peptidoglycan\Debug\Peptidoglycan.lib" /MACHINE:X86 Debug\Main.obj
          Debug\Monomer.obj
@@ -20,4 +13,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.21
+Time Elapsed 00:00:01.93
