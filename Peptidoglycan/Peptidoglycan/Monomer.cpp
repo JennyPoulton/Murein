@@ -17,11 +17,11 @@ Monomer::Monomer()
 	Set_Number_Bonds_Glycan(0);
 	Set_Number_Bonds_Peptide(0);
 		
-	if (rand() / (double)RAND_MAX < PEPTIDE_PROB)
+	if (rand()/(double)RAND_MAX <= PEPTIDE_PROB)
 	{
 		Set_Number_Bonds_Peptide(1);
 	}
-	if (rand() / (double)RAND_MAX < GLYCAN_PROB)
+	if (rand()/(double)RAND_MAX <= GLYCAN_PROB)
 	{
 		Set_Number_Bonds_Glycan(1);
 	}

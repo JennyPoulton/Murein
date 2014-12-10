@@ -38,7 +38,7 @@ int main(void)
 
 	Polymer StaphAureous;
 
-	double Force = 10;
+	double Force = 20;
 
 	StaphAureous.Set_Forces_And_Lengths(Force);
 	//StaphAureous.Calculate_All_Forces_Leftwards(Force / (double)2);
