@@ -190,10 +190,13 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 			}				
 		}
 
+		tally_peptides = tally_peptides - Murein[n][q].Return_Number_Bonds_Peptide();
+
 		if (n - 1 >= DIMENSION - 1 || n - 1 <= 0)
 		{
 			tally_peptides = DIMENSION;
 		}
+
 
 		Numerator[p][q] = Numerator[p][q]*(double)tally_peptides;
 		cout << "Num" << Numerator[p][q] << endl;
@@ -225,10 +228,13 @@ void Polymer::Find_Force_Upwards(double Input_Force, int p, int q)
 					
 		}
 
+		tally_peptides = tally_peptides - Murein[n][q].Return_Number_Bonds_Peptide();
+
 		if (n+1>= DIMENSION - 1 || n<= 0)
 		{
 			tally_peptides = DIMENSION;
 		}
+
 
 		Denominator[p][q] = Denominator[p][q]*(double)tally_peptides;
 		cout << "Den" << Denominator[p][q] << endl;
@@ -324,6 +330,8 @@ void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
 
 		}
 
+		tally_peptides = tally_peptides - Murein[n][q].Return_Number_Bonds_Peptide();
+
 		if (n - 1 >= DIMENSION - 1 || n - 1 <= 0)
 		{
 			tally_peptides = DIMENSION;
@@ -357,6 +365,8 @@ void Polymer::Find_Force_Downwards(double Input_Force, int p, int q)
 			}
 
 		}
+
+		tally_peptides = tally_peptides - Murein[n][q].Return_Number_Bonds_Peptide();
 
 		if (n+1 >= DIMENSION - 1||n<=0)
 		{
